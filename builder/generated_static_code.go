@@ -592,7 +592,11 @@ func (p *parser) addErr(err error) {
 
 func (p *parser) addErrAt(err error, pos position, expected []string) {
 	var buf bytes.Buffer
-	buf.WriteString(fmt.Sprintf("Syntactic Error at %d:%d\n", pos.line, pos.col-1))
+	if pos.col > 0 {
+		buf.WriteString(fmt.Sprintf("Syntactic Error at %d:%d\n", pos.line, pos.col-1))
+	} else {
+		buf.WriteString(fmt.Sprintf("Syntactic Error at %d:%d\n", pos.line, 0))
+	}
 	scanner := bufio.NewScanner(bytes.NewReader(p.data))
 	count := 0
 	foundLine := false
@@ -812,7 +816,11 @@ func (p *parser) parse(g *grammar) (val interface{}, err error) {
 			if eof {
 				expected = append(expected, "EOF")
 			}
-			p.addErrAt(errors.New("Invalid input, expected: "+listJoin(expected, ", ", "or")), p.maxFailPos, expected)
+			if len(expected) == 0 {
+				p.addErrAt(errors.New("Invalid input, expected: "+listJoin(expected, ", ", "or")), p.maxFailPos, expected)
+			} else {
+				p.addErrAt(errors.New("Invalid statement"), p.maxFailPos, expected)
+			}
 		}
 
 		return nil, p.errs.err()
