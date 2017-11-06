@@ -831,7 +831,6 @@ func (p *parser) parse(g *grammar) (val interface{}, err error) {
 				}
 				allKeys = append(allKeys, k)
 			}
-			fmt.Println(strings.Join(allKeys, ""))
 			if strings.Join(allKeys, "") == "[ \\n\\t\\r]\"#\"[0-9]" {
 				expected = append(expected, "integer literal")
 			}
