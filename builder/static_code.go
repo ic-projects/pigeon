@@ -836,7 +836,7 @@ func (p *parser) parse(g *grammar) (val interface{}, err error) {
 			if len(expected) > 0 {
 				p.addErrAt(errors.New("Invalid input, expected: "+listJoin(expected, ", ", "or")), p.maxFailPos, expected)
 			} else {
-				p.addErrAt(errors.New(fmt.Sprintf("Incomplete statement, '%s' is not allowed here", string(p.cur.text))), p.maxFailPos, expected)
+				p.addErrAt(errors.New(fmt.Sprintf("Missing or incomplete statement after '%s'", string(p.cur.text))), p.maxFailPos, expected)
 			}
 		}
 
