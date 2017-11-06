@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mna/pigeon/examples/json"
+	"github.com/ic-projects/pigeon/examples/json"
 )
 
 func main() {

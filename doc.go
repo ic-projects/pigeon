@@ -371,7 +371,7 @@ It is important to notice, that the global store is completely independent from
 the backtrack mechanism of PEG and is therefore not set back to its old state
 during backtrack.
 The initialization of the global store may be achieved by using the GlobalStore
-function (http://godoc.org/github.com/mna/pigeon/test/predicates#GlobalStore).
+function (http://godoc.org/github.com/ic-projects/pigeon/test/predicates#GlobalStore).
 Be aware, that all keys starting with "_pigeon" are reserved for internal use
 of pigeon and should not be used nor modified. Those keys are treated as
 internal implementation details and therefore there are no guarantees given in
@@ -435,7 +435,7 @@ as a package with public functions to parse input text. The exported API is:
 
 See the godoc page of the generated parser for the test/predicates grammar
 for an example documentation page of the exported API:
-http://godoc.org/github.com/mna/pigeon/test/predicates.
+http://godoc.org/github.com/ic-projects/pigeon/test/predicates.
 
 Like the grammar used to generate the parser, the input text must be
 UTF-8-encoded Unicode.
@@ -520,7 +520,7 @@ command line tools).
 One possible implementation for exported errors (based on interfaces) and
 customized error reporting (caret style formatting of the position, where
 the parsing failed) is available in the json example and its command line tool:
-http://godoc.org/github.com/mna/pigeon/examples/json
+http://godoc.org/github.com/ic-projects/pigeon/examples/json
 
 API stability
 
@@ -567,7 +567,7 @@ the future):
     original error value. There are no guarantees on other fields and methods
     of this type.
 
-The above guarantee is given to the version 1.0 (https://github.com/mna/pigeon/releases/tag/v1.0.0)
+The above guarantee is given to the version 1.0 (https://github.com/ic-projects/pigeon/releases/tag/v1.0.0)
 of pigeon, which has entered maintenance mode (bug fixes only). The current
 master branch includes the development toward a future version 2.0, which
 intends to further improve pigeon.
@@ -579,7 +579,7 @@ may occur at any time.
 References:
 
     [5]: https://golang.org/doc/go1compat
-    [6]: http://godoc.org/github.com/mna/pigeon/test/predicates
+    [6]: http://godoc.org/github.com/ic-projects/pigeon/test/predicates
 
 */
 package main

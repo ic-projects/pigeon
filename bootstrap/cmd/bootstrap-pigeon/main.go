@@ -13,8 +13,8 @@ import (
 
 	"golang.org/x/tools/imports"
 
-	"github.com/mna/pigeon/ast"
-	"github.com/mna/pigeon/builder"
+	"github.com/ic-projects/pigeon/ast"
+	"github.com/ic-projects/pigeon/builder"
 )
 
 func main() {

@@ -13,7 +13,7 @@ import (
 
 	"regexp"
 
-	"github.com/mna/pigeon/ast"
+	"github.com/ic-projects/pigeon/ast"
 )
 
 // generated function templates

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mna/pigeon/ast"
+	"github.com/ic-projects/pigeon/ast"
 )
 
 type errList []error
