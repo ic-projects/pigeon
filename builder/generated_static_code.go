@@ -593,9 +593,9 @@ func (p *parser) addErr(err error) {
 func (p *parser) addErrAt(err error, pos position, expected []string) {
 	var buf bytes.Buffer
 	if pos.col > 0 {
-		buf.WriteString(fmt.Sprintf("Syntactic Error at %d:%d\n", pos.line, pos.col-1))
+		buf.WriteString(fmt.Sprintf("\nSyntactic Error at %d:%d\n", pos.line, pos.col-1))
 	} else {
-		buf.WriteString(fmt.Sprintf("Syntactic Error at %d:%d\n", pos.line, 0))
+		buf.WriteString(fmt.Sprintf("\nSyntactic Error at %d:%d\n", pos.line, 0))
 	}
 	scanner := bufio.NewScanner(bytes.NewReader(p.data))
 	count := 0
@@ -802,6 +802,7 @@ func (p *parser) parse(g *grammar) (val interface{}, err error) {
 				maxFailExpectedMap[v] = struct{}{}
 			}
 			expected := make([]string, 0, len(maxFailExpectedMap))
+			allKeys := make([]string, 0, len(maxFailExpectedMap))
 			eof := false
 			if _, ok := maxFailExpectedMap["!."]; ok {
 				delete(maxFailExpectedMap, "!.")
@@ -811,6 +812,11 @@ func (p *parser) parse(g *grammar) (val interface{}, err error) {
 				if k != "\"#\"" && k != "\"_\"" && k != "[ \\n\\t\\r]" && k != "[a-z]" && k != "[A-Z]" && k != "[0-9]" {
 					expected = append(expected, k)
 				}
+				allKeys = append(allKeys, k)
+			}
+			fmt.Println(strings.Join(allKeys, ""))
+			if strings.Join(allKeys, "") == "[ \\n\\t\\r]\"#\"[0-9]" {
+				expected = append(expected, "integer literal")
 			}
 			sort.Strings(expected)
 			if eof {
