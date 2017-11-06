@@ -816,7 +816,7 @@ func (p *parser) parse(g *grammar) (val interface{}, err error) {
 			if eof {
 				expected = append(expected, "EOF")
 			}
-			if len(expected) == 0 {
+			if len(expected) > 0 {
 				p.addErrAt(errors.New("Invalid input, expected: "+listJoin(expected, ", ", "or")), p.maxFailPos, expected)
 			} else {
 				p.addErrAt(errors.New("Invalid statement"), p.maxFailPos, expected)
