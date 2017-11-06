@@ -386,7 +386,7 @@ type parserError struct {
 
 // Error returns the error message.
 func (p *parserError) Error() string {
-	return p.prefix + ": " + p.Inner.Error()
+	return p.prefix + p.Inner.Error()
 }
 
 // newParser creates a parser with the specified input source and options.
@@ -592,23 +592,23 @@ func (p *parser) addErr(err error) {
 
 func (p *parser) addErrAt(err error, pos position, expected []string) {
 	var buf bytes.Buffer
-	if p.filename != "" {
-		buf.WriteString(p.filename)
-	}
-	if buf.Len() > 0 {
-		buf.WriteString(":")
-	}
-	buf.WriteString(fmt.Sprintf("%d:%d (%d)", pos.line, pos.col, pos.offset))
-	if len(p.rstack) > 0 {
-		if buf.Len() > 0 {
-			buf.WriteString(": ")
+	buf.WriteString(fmt.Sprintf("Syntactic Error at %d:%d\n", pos.line, pos.col-1))
+	scanner := bufio.NewScanner(bytes.NewReader(p.data))
+	count := 0
+	foundLine := false
+	for scanner.Scan() {
+		count += 1
+		if count == pos.line {
+			buf.WriteString(scanner.Text() + "\n")
+			foundLine = true
+			break
 		}
-		rule := p.rstack[len(p.rstack)-1]
-		if rule.displayName != "" {
-			buf.WriteString("rule " + rule.displayName)
-		} else {
-			buf.WriteString("rule " + rule.name)
+	}
+	if foundLine {
+		for i := 1; i < pos.col; i++ {
+			buf.WriteString(" ")
 		}
+		buf.WriteString(fmt.Sprintf("^\n"))
 	}
 	pe := &parserError{Inner: err, pos: pos, prefix: buf.String(), expected: expected}
 	p.errs.add(pe)
@@ -766,11 +766,9 @@ func (p *parser) parse(g *grammar) (val interface{}, err error) {
 		// and return the panic as an error.
 		defer func() {
 			if e := recover(); e != nil {
-				// ==template== {{ if not .Optimize }}
 				if p.debug {
 					defer p.out(p.in("panic handler"))
 				}
-				// {{ end }} ==template==
 				val = nil
 				switch e := e.(type) {
 				case error:
@@ -806,13 +804,15 @@ func (p *parser) parse(g *grammar) (val interface{}, err error) {
 				eof = true
 			}
 			for k := range maxFailExpectedMap {
-				expected = append(expected, k)
+				if k != "\"#\"" && k != "\"_\"" && k != "[ \\n\\t\\r]" && k != "[a-z]" && k != "[A-Z]" && k != "[0-9]" {
+					expected = append(expected, k)
+				}
 			}
 			sort.Strings(expected)
 			if eof {
 				expected = append(expected, "EOF")
 			}
-			p.addErrAt(errors.New("no match found, expected: "+listJoin(expected, ", ", "or")), p.maxFailPos, expected)
+			p.addErrAt(errors.New("Invalid input, expected: "+listJoin(expected, ", ", "or")), p.maxFailPos, expected)
 		}
 
 		return nil, p.errs.err()
