@@ -831,8 +831,14 @@ func (p *parser) parse(g *grammar) (val interface{}, err error) {
 				}
 				allKeys = append(allKeys, k)
 			}
-			if strings.Join(allKeys, "") == "[ \\n\\t\\r]\"#\"[0-9]" {
+			if strings.Join(allKeys, "") == "\"#\"[ \\n\\t\\r][0-9]" {
 				expected = append(expected, "integer literal")
+			}
+			if strings.Join(allKeys, "") == "\"#\"\"[\"\"_\"[ \\n\\t\\r][A-Z][a-z]" {
+				expected = append(expected, "identifier")
+			}
+			if strings.Join(allKeys, "") == "\"#\"\"[\"\"_\"\"begin\"\"bool\"\"call\"\"char\"\"chr\"\"do\"\"done\"\"else\"\"end\"\"exit\"\"false\"\"free\"\"fst\"\"if\"\"int\"\"is\"\"len\"\"newpair\"\"null\"\"ord\"\"pair\"\"print\"\"println\"\"read\"\"return\"\"skip\"\"snd\"\"string\"\"then\"\"true\"\"while\"[ \\n\\t\\r][A-Z][a-z]" {
+				expected = []string{"identifier", "\"[\""}
 			}
 			sort.Strings(expected)
 			if eof {
