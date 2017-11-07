@@ -617,16 +617,24 @@ func (p *parser) addErrAt(err error, pos position, expected []string) {
 	scanner := bufio.NewScanner(bytes.NewReader(p.data))
 	count := 0
 	foundLine := false
+	leadingChars := 0
 	for scanner.Scan() {
 		count += 1
 		if count == pos.line {
-			buf.WriteString(scanner.Text() + "\n")
+			for _, c := range scanner.Text() {
+				if c == '\t' || c == ' ' {
+					leadingChars++
+				} else {
+					break
+				}
+			}
+			buf.WriteString(scanner.Text()[leadingChars:] + "\n")
 			foundLine = true
 			break
 		}
 	}
 	if foundLine {
-		for i := 1; i < pos.col; i++ {
+		for i := 1; i < pos.col - leadingChars; i++ {
 			buf.WriteString(" ")
 		}
 		buf.WriteString(fmt.Sprintf("^\n"))
